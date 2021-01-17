@@ -1,4 +1,4 @@
-package br.com.rodrigorahman.springbootcommysql;
+package br.com.springprocesso.pucsigo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

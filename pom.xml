@@ -8,10 +8,10 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.rodrigorahman</groupId>
-	<artifactId>spring-boot-com-mysql</artifactId>
+	<groupId>br.com.springprocesso</groupId>
+	<artifactId>pucsigo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-com-mysql</name>
+	<name>pucsigo</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
