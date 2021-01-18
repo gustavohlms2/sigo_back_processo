@@ -1,26 +1,35 @@
 package br.com.springprocesso.pucsigo.model;
 
-import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name = "tipo_processo")
-public class TipoProcesso {
+public class TipoProcesso  implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    @Column(name="nome", unique = true, nullable = false)
+    @NotNull
     private String nome;
 
-    @Column(name="data_criacao")
+    @NotNull
     private String data_criacao;
-
-    @Column(name="data_alteracao")
+    
     private String data_alteracao;
 
-    @Column(name="indativo")
+    @NotNull
     private Boolean indativo;
 
     public TipoProcesso(String nome, String data_criacao, String data_alteracao, Boolean indativo) {

@@ -1,87 +1,64 @@
 package br.com.springprocesso.pucsigo.controller;
-
-import br.com.springprocesso.pucsigo.controller.dto.OperadorRq;
-import br.com.springprocesso.pucsigo.controller.dto.OperadorRs;
-import br.com.springprocesso.pucsigo.model.Operador;
-import br.com.springprocesso.pucsigo.repository.OperadorCustomRepository;
-import br.com.springprocesso.pucsigo.repository.OperadorRepository;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.springprocesso.pucsigo.model.Operador;
+import br.com.springprocesso.pucsigo.repository.OperadorRepository;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/operador")
+@RequestMapping(value="/api")
+@Api(value="API REST Operador")
 public class OperadorController {
-
-    private final OperadorRepository operadorRepository;
-    private final OperadorCustomRepository operadorCustomRepository;
-
-    public OperadorController(OperadorRepository operadorRepository, OperadorCustomRepository operadorCustomRepository) {
-        this.operadorRepository = operadorRepository;
-        this.operadorCustomRepository = operadorCustomRepository;
-    }
-
-    @CrossOrigin
-    @GetMapping("/")
-    public List<OperadorRs> findAll() {
-        var operadors = operadorRepository.findAll();
-        return operadors
-                .stream()
-                .map(OperadorRs::converter)
-                .collect(Collectors.toList());
-    }
-
-    @CrossOrigin
-    @GetMapping("/{id}")
-    public OperadorRs findById(@PathVariable("id") Long id) {
-        var operador = operadorRepository.getOne(id);
-        return OperadorRs.converter(operador);
-    }
-
-    @CrossOrigin
-    @PostMapping("/")
-    public void saveOperador(@RequestBody OperadorRq operador) {
-        var n = new Operador();
-        n.setNome(operador.getNome());
-        n.setEmail(operador.getEmail());
-        n.setTelefone(operador.getTelefone());
-        n.setCargo(operador.getCargo());
-        n.setDataCriacao(operador.getDataCriacao());
-        n.setDataAlteracao(operador.getDataAlteracao());
-        n.setIndativo(operador.getIndativo());
-        operadorRepository.save(n);
-    }
-
-    @CrossOrigin
-    @PutMapping("/{id}")
-    public void updatePerson(@PathVariable("id") Long id, @RequestBody OperadorRq operador) throws Exception {
-        var p = operadorRepository.findById(id);
-
-        if (p.isPresent()) {
-            var operadorSave = p.get();
-            operadorSave.setNome(operador.getNome());
-            operadorSave.setEmail(operador.getEmail());
-            operadorSave.setTelefone(operador.getTelefone());
-            operadorSave.setCargo(operador.getCargo());
-            operadorSave.setDataCriacao(operador.getDataCriacao());
-            operadorSave.setDataAlteracao(operador.getDataAlteracao());
-            operadorSave.setIndativo(operador.getIndativo());
-            operadorRepository.save(operadorSave);
-        } else {
-            throw new Exception("Operador Não encontrado");
-        }
-    }
-    
-    @CrossOrigin
-    @DeleteMapping("/{id}")
-    public void updatePerson(@PathVariable("id") Long id ) throws Exception {
-        var p = operadorRepository.findById(id);
-        if (p.isPresent()) {
-            operadorRepository.deleteById(id);        
-        } else {
-            throw new Exception("Operador Não encontrado");
-        }
-    }
+	
+	@Autowired
+	OperadorRepository operadorRepository;
+	
+	@ApiOperation(value="Retorna uma lista de Operadores")
+	@GetMapping("/operador")
+	public List<Operador> listaProdutos(){
+		return operadorRepository.findAll();
+	}
+	
+	@ApiOperation(value="Retorna um operador unico")
+	@GetMapping("/operador/{id}")
+	public Operador listaProdutoUnico(@PathVariable(value="id") long id){
+		return operadorRepository.findById(id);
+	}
+	
+	@ApiOperation(value="Salva um operador")
+	@PostMapping("/operador")
+	public Operador salvaProduto(@RequestBody @Valid Operador operador) {
+		return operadorRepository.save(operador);
+	}
+	
+	@ApiOperation(value="Deleta um operador")
+	@DeleteMapping("/operador")
+	public void deletaProduto(@RequestBody @Valid Operador operador) {
+		operadorRepository.delete(operador);
+	}
+	
+	@ApiOperation(value="Atualiza um operador")
+	@PutMapping("/operador")
+	public Operador atualizaProduto(@RequestBody @Valid Operador operador) {
+		return operadorRepository.save(operador);
+	}
+	 
 
 }

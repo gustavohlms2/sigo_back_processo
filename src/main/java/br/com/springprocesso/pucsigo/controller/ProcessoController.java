@@ -1,91 +1,64 @@
 package br.com.springprocesso.pucsigo.controller;
-
-import br.com.springprocesso.pucsigo.controller.dto.ProcessoRq;
-import br.com.springprocesso.pucsigo.controller.dto.ProcessoRs;
-import br.com.springprocesso.pucsigo.model.Processo;
-import br.com.springprocesso.pucsigo.repository.ProcessoCustomRepository;
-import br.com.springprocesso.pucsigo.repository.ProcessoRepository;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.springprocesso.pucsigo.model.Processo;
+import br.com.springprocesso.pucsigo.repository.ProcessoRepository;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/processo")
+@RequestMapping(value="/api")
+@Api(value="API REST Processo")
 public class ProcessoController {
-
-    private final ProcessoRepository processoRepository;
-    private final ProcessoCustomRepository processoCustomRepository;
-
-    public ProcessoController(ProcessoRepository processoRepository, ProcessoCustomRepository processoCustomRepository) {
-        this.processoRepository = processoRepository;
-        this.processoCustomRepository = processoCustomRepository;
-    }
-
-    @CrossOrigin
-    @GetMapping("/")
-    public List<ProcessoRs> findAll() {
-        var processos = processoRepository.findAll();
-        return processos
-                .stream()
-                .map(ProcessoRs::converter)
-                .collect(Collectors.toList());
-    }
-
-    @CrossOrigin
-    @GetMapping("/{id}")
-    public ProcessoRs findById(@PathVariable("id") Long id) {
-        var processo = processoRepository.getOne(id);
-        return ProcessoRs.converter(processo);
-    }
-
-    @CrossOrigin
-    @PostMapping("/")
-    public void saveProcesso(@RequestBody ProcessoRq processo) {
-        var n = new Processo();
-        n.setNome(processo.getNome());
-        n.setDescricao(processo.getDescricao());
-        n.setIdoperador(processo.getIdoperador());
-        n.setIdtipoprocesso(processo.getIdtipoprocesso());
-        n.setPrioridade(processo.getPrioridade());
-        n.setStatus(processo.getStatus());
-        n.setDataCriacao(processo.getDataCriacao());
-        n.setDataAlteracao(processo.getDataAlteracao());
-        n.setIndativo(processo.getIndativo());  
-        processoRepository.save(n);
-    }
-
-    @CrossOrigin
-    @PutMapping("/{id}")
-    public void updatePerson(@PathVariable("id") Long id, @RequestBody ProcessoRq processo) throws Exception {
-        var p = processoRepository.findById(id);
-
-        if (p.isPresent()) {
-            var processoSave = p.get();
-            processoSave.setNome(processo.getNome());
-            processoSave.setDescricao(processo.getDescricao());
-            processoSave.setIdoperador(processo.getIdoperador());
-            processoSave.setIdtipoprocesso(processo.getIdtipoprocesso());
-            processoSave.setPrioridade(processo.getPrioridade());
-            processoSave.setStatus(processo.getStatus());
-            processoSave.setDataCriacao(processo.getDataCriacao());
-            processoSave.setDataAlteracao(processo.getDataAlteracao());
-            processoSave.setIndativo(processo.getIndativo());            
-            processoRepository.save(processoSave);
-        } else {
-            throw new Exception("Processo Não encontrado");
-        }
-    }
-    
-    @CrossOrigin
-    @DeleteMapping("/{id}")
-    public void updatePerson(@PathVariable("id") Long id ) throws Exception {
-        var p = processoRepository.findById(id);
-        if (p.isPresent()) {
-            processoRepository.deleteById(id);        
-        } else {
-            throw new Exception("Processo Não encontrado");
-        }
-    }
+	
+	@Autowired
+	ProcessoRepository processoRepository;
+	
+	@ApiOperation(value="Retorna uma lista de Processos")
+	@GetMapping("/processo")
+	public List<Processo> listaProdutos(){
+		return processoRepository.findAll();
+	}
+	
+	@ApiOperation(value="Retorna um processo unico")
+	@GetMapping("/processo/{id}")
+	public Processo listaProdutoUnico(@PathVariable(value="id") long id){
+		return processoRepository.findById(id);
+	}
+	
+	@ApiOperation(value="Salva um processo")
+	@PostMapping("/processo")
+	public Processo salvaProduto(@RequestBody @Valid Processo processo) {
+		return processoRepository.save(processo);
+	}
+	
+	@ApiOperation(value="Deleta um processo")
+	@DeleteMapping("/processo")
+	public void deletaProduto(@RequestBody @Valid Processo processo) {
+		processoRepository.delete(processo);
+	}
+	
+	@ApiOperation(value="Atualiza um processo")
+	@PutMapping("/processo")
+	public Processo atualizaProduto(@RequestBody @Valid Processo processo) {
+		return processoRepository.save(processo);
+	}
+	 
 
 }
