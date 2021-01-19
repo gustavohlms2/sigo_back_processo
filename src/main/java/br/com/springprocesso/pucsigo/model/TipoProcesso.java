@@ -32,13 +32,6 @@ public class TipoProcesso  implements Serializable {
     @NotNull
     private Boolean indativo;
 
-    public TipoProcesso(String nome, String data_criacao, String data_alteracao, Boolean indativo) {
-		this.nome = nome;
-        this.data_criacao = data_criacao;
-        this.data_alteracao = data_alteracao;
-		this.indativo = indativo;
-	}
-
     public Long getId() {
         return id;
     }
